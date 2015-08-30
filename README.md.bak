@@ -1,0 +1,8 @@
+# 斗地主
+
+技术框架：
+	springMVC、mybatis、webSocket、mina、jms、mongoDB、memcache
+
+业务框架：
+	跟客户端是通过socket长连
+
