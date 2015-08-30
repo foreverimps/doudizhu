@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>登录</title>
+<meta content="text/html;charset=utf-8" http-equiv="content-type">
+<link rel='stylesheet' href='common/lingshi/css/style.css' />
+<link rel='stylesheet' href='common/lingshi/css/base.css' />
+<script type="text/javascript" src="common/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="common/lingshi/js/common.js"></script>
+<script type="text/javascript" src="common/jquery.md5.js"></script>
+<script type="text/javascript" src="common/jquery.validate.min.js"></script>
+<script type="text/javascript" src="common/jquery.validate.messages_zh.js"></script>
+</head>
+<body>
+	<div class="header"></div>
+    <div class="login_bg" id="first">
+    		<div class="login_top">欢迎来到吞噬苍穹登录页面！</div>
+    		<form id="form" action="/platform-gamecenter/lingshi/user/login">
+    		<div class="list list_w353"><font>游戏帐号：</font><input type="text" class="input" name="gameAccount"></div>
+    		<div class="list list_w353"><font>角色Id：</font><input type="text" name="roleId" class="input"></div>
+    		<a class="left_button" style="margin-left: 349px;margin-top: 33px;" onClick>登录</a>
+      		</form>
+      </div>
+      <script type="text/javascript">
+      	$('a').click(function(){
+      		$('#form').submit();
+      	});
+      </script>
+</body>
+</html>

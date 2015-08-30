@@ -1,0 +1,23 @@
+.tabs{background-color:#061C33;width: 560px;margin: 0 auto;height:347px;border-radius: 50px;position: relative;}
+.page1{background:#E4E4E4;width: 640px; height: 450px; max-height: 1008px; position: absolute; overflow: hidden;}
+.site{position: absolute;background-color: #fff;width:150px;height: 57px;border: 1px #000 solid;}
+.site h2{text-align: center;}index_button
+.site span{display: inline-block;width:48%;text-align: center;}
+#site1{left: -35px;top: 20px;}
+#site2{left:-35px;bottom:105px;}
+#site3{left: 202px;bottom: 10px;}
+#site4{right:-35px;bottom:105px;}
+#site5{right:-35px;top:20px;}
+
+.all_money{position: absolute;left: 45%;top: 1px;color: white;}
+.ready{position: absolute;left: 45%;top:150px;color: green;}
+.remaining_time{position: absolute;left: 48%;top:100px;color: white;}
+.fllow_last{position: absolute;right: 20px;bottom:59px;}
+.index_button{background-color:green;position: absolute;width: 67px;height: 30px;line-height: 30px;text-align: center;}
+.quite{left: 565px;bottom: 93px;}
+.discard{left:10px;bottom:50px;}
+.look{left:100px;bottom: 50px;}
+.match{left:190px;bottom: 50px;}    
+.pull{left:280px;bottom: 50px;}
+.filling{left:370px;bottom: 50px;}
+.receive{left:460px;bottom: 50px;}

@@ -1,0 +1,9 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "AccountBankProtobuf";
+message AccountBank {
+	required int64 ID = 1;//米谷账号id
+	required string CardNumber = 2;//银行卡号
+	required int32 BankId = 3;//银行编号
+}

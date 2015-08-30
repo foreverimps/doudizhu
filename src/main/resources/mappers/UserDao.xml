@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zj.platform.gamecenter.dao.UserDao" >
+  
+  <sql id="base_cloumn" >
+    ID, ACCOUNT, PASSWORD, SOURCE, STATUS, ICON,CREATE_TIME AS createTime, UPDATE_TIME as updateTime
+  </sql>
+  
+  <select id="getById" resultType="com.zj.platform.gamecenter.entity.User">
+       select 
+    <include refid="base_cloumn" />
+    from t_user WHERE ID=#{id}
+  </select>
+  
+  <select id="queryAiUser" resultType="com.zj.platform.gamecenter.entity.User">
+       select 
+    <include refid="base_cloumn" />
+    from t_user WHERE SOURCE = #{source}
+  </select>
+  
+  <select id="login" resultType="com.zj.platform.gamecenter.entity.User" >
+    select 
+    <include refid="base_cloumn" />
+    from t_user
+    where ACCOUNT = #{account} AND PASSWORD = #{password}
+  </select>
+  
+  <insert id="register" keyProperty="id" useGeneratedKeys="true"  parameterType="com.zj.platform.gamecenter.entity.User">
+    insert into t_user ( ACCOUNT, PASSWORD, 
+      SOURCE, STATUS, CREATE_TIME, TYPE,
+      UPDATE_TIME)
+    values (#{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{source,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{type,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <update id="updateInfo" parameterType="com.zj.platform.gamecenter.entity.User">
+    update t_user
+    <set >
+      <if test="account != null" >
+        ACCOUNT = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        SOURCE = #{source,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    WHERE ID = #{id}
+  </update>
+  
+</mapper>

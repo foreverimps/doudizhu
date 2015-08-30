@@ -1,0 +1,8 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "BatchRemoveBankProtobuf";
+message BatchRemoveBank {
+	required int64 ID = 1;//米谷账号id
+	repeated string CardNumber = 2;//银行卡号List
+}

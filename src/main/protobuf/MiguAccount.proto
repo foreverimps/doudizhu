@@ -1,0 +1,13 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "MiguAccountProtobuf";
+message MiguAccount {
+	required int64 ID = 1;//米谷账号id
+	optional string Balance = 2;//账户余额
+	optional string Phone = 3;//用户手机
+	optional string PayPassword = 4;//支付密码
+	optional string OldPayPassword = 5;//原支付密码
+	optional string RealName = 6;//用户姓名
+	optional string idCard = 7;//身份证
+}

@@ -1,0 +1,11 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "ParamProtobuf";
+message Param {
+	required int64 ID = 1;//操作标示
+	required string Key = 2;//唯一标示，用于处理具体业务线程
+	optional string Company = 3;//合作公司
+	optional bytes Content = 4;//数据对象的byte数组，根据操作标示不同，传入不同对象的byte数组，非必填项
+	optional int32 Status = 5;//处理结果，非必填项
+}

@@ -1,0 +1,11 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "GameAccountProtobuf";
+message GameAccount {
+	required string GameId = 1;//游戏id，双方约定
+	required string GroupId = 2;//游戏大区
+	required string ServerId = 3;//游戏服务器标示
+	required string Account = 4;//账号标示，名称／id
+	required string RoleId = 5;//角色标示，名称／id
+}

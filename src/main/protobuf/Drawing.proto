@@ -1,0 +1,12 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "DrawingProtobuf";
+message Drawing {
+	required int64 ID = 1;//米谷账号id
+	required string PayPassword = 2;//支付密码
+	required string RealName = 3;//用户姓名
+	required string idCard = 4;//身份证
+	required string CardNumber = 5;//银行卡号
+	required string Money = 6;//实际提现金额
+}

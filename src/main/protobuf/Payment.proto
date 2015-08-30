@@ -1,0 +1,11 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "PaymentProtobuf";
+message Payment {
+	required int64 PayId = 1;//支付者的米谷id
+	required int64 SellId = 2;//出售者的米谷id
+	required string OrderNumber = 3;//游戏中的商品交易订单id
+	required string Money = 4;//实际支付金额
+	required string PayPassword = 5;//支付密码
+}

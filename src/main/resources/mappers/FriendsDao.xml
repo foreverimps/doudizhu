@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zj.platform.gamecenter.dao.FriendsDao" >
+  
+    <sql id="base_column" >
+    	ID, USER_ID as userId, TO_USER_ID as toUserId, FRIEND_NAME as friendName, ONLINE_STATUS as onlineStatus,STATUS as status, ACCOUNT,ICON,USER_TYPE as userType,CREATE_TIME AS createTime, UPDATE_TIME as updateTime
+  	</sql>
+    
+    <select id="getById" resultType="com.zj.platform.gamecenter.entity.Friends">
+        <include refid="base_column"/>
+        FROM T_FRIENDS WHERE ID=#{id} 
+    </select>
+    
+    <select id="getByUserIdAndFriendId" resultType="com.zj.platform.gamecenter.entity.Friends">
+        <include refid="base_column"/>
+        FROM T_FRIENDS WHERE USER_ID=#{userId} AND TO_USER_ID=#{friendsId} AND STATUS=1 
+    </select>
+    
+    <select id="getSelfFriend" resultType="com.zj.platform.gamecenter.entity.Friends">
+         <include refid="base_column"/>
+         FROM T_FRIENDS WHERE USER_ID =#{userId} AND TO_USER_ID =#{userId}
+    </select>
+    
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.zj.platform.gamecenter.entity.Friends">
+        INSERT INTO T_FRIENDS(USER_ID,TO_USER_ID,FRIEND_NAME,ONLINE_STATUS,STATUS,ACCOUNT,USER_TYPE,
+        <if test="icon!=null">
+            ICON,
+        </if>
+        UPDATE_TIME,CREATE_TIME) 
+        VALUES(#{userId},#{toUserId},#{friendName},#{onlineStatus},#{status},#{account},#{userType},
+        <if test="icon!=null">
+            #{icon},
+        </if>
+        #{updateTime},#{createTime})
+    </insert>
+    
+    <update  id="relieveFriend">
+        UPDATE T_FRIENDS SET STATUS=0 WHERE ID=#{id}
+    </update>
+    
+    <select id="getAllFriendsByUserId" resultType="com.zj.platform.gamecenter.entity.Friends">
+        <include refid="base_column"/>
+        FROM T_FRIENDS WHERE USER_ID=#{userId}  AND STATUS =1
+        <if test="isOnline">
+            AND ONLINE_STATUS=1
+        </if>
+        ORDER BY USER_TYPE DESC,FRIEND_NAME ASC
+    </select>
+    
+    <select id="getAllOnLineFriendsIdByUserId" resultType="java.lang.Long">
+        SELECT TO_USER_ID 
+        FROM T_FRIENDS WHERE USER_ID=#{userId} AND TO_USER_ID !=#{userId}
+        AND (ONLINE_STATUS=1 OR ONLINE_STATUS=2) AND STATUS =1
+        ORDER BY USER_TYPE DESC,FRIEND_NAME ASC
+    </select>
+    
+    <update id="modifyFriendName">
+        UPDATE T_FRIENDS SET FRIEND_NAME=#{friendName}
+        WHERE ID=#{id}
+    </update>
+    
+    <update id="changeIcons">
+        UPDATE T_FRIENDS SET ICON=#{icon} WHERE TO_USER_ID=#{friendId} AND STATUS =1
+    </update>
+    <update id="changeUserType">
+        UPDATE T_FRIENDS SET USER_TYPE=#{userType} WHERE TO_USER_ID=#{friendId} AND STATUS =1
+    </update>
+    <update id="changeOnlineStatus">
+        UPDATE T_FRIENDS SET ONLINE_STATUS=#{onlineStatus} WHERE TO_USER_ID=#{friendId} AND STATUS =1
+    </update>
+    
+</mapper>

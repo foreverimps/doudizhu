@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-4.0.xsd
+	http://www.springframework.org/schema/data/mongo
+    http://www.springframework.org/schema/data/mongo/spring-mongo-1.4.xsd">
+
+	<!-- 使用annotation 自动注册bean,并检查@Required,@Autowired的属性已被注入 -->
+	<context:component-scan base-package="com.zj.platform.gamecenter">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+	</context:component-scan>
+
+	<!-- 资源文件配置 -->
+	<util:properties id="daoProps" location="classpath:dao.properties" />
+	<util:properties id="configProps" location="classpath:config.properties" />
+	<util:properties id="mongoProps" location="classpath:mongodb.properties"/>
+	
+	  <!-- 定义mongo对象，对应的是mongodb官方jar包中的Mongo，replica-set设置集群副本的ip地址和端口 -->
+    <mongo:mongo id="mongo" replica-set="192.168.0.240:27017">
+        <!-- 一些连接属性的设置 -->    
+<!--         <mongo:options -->
+<!--              connections-per-host="${mongoProps.connectionsPerHost}" -->
+<!--              threads-allowed-to-block-for-connection-multiplier="${mongoProps.threadsAllowedToBlockForConnectionMultiplier}" -->
+<!--              connect-timeout="${mongoProps.connectTimeout}" -->
+<!--              max-wait-time="${mongoProps.maxWaitTime}" -->
+<!--              auto-connect-retry="${mongoProps.autoConnectRetry}" -->
+<!--              socket-keep-alive="${mongoProps.socketKeepAlive}" -->
+<!--              socket-timeout="${mongoProps.socketTimeout}" -->
+<!--              slave-ok="${mongoProps.slaveOk}" -->
+<!--              write-number="1" -->
+<!--              write-timeout="0" -->
+<!--              write-fsync="true"/>         -->
+    </mongo:mongo>
+	<!-- mongo的工厂，通过它来取得mongo实例,dbname为mongodb的数据库名，没有的话会自动创建 -->  
+    <mongo:db-factory dbname="game" mongo-ref="mongo" />
+  
+    <!-- mongodb的主要操作对象，所有对mongodb的增删改查的操作都是通过它完成 -->  
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg name="mongoDbFactory" ref="mongoDbFactory" />
+    </bean>
+    <!-- 映射转换器，扫描back-package目录下的文件，根据注释，把它们作为mongodb的一个collection的映射 -->  
+    <mongo:mapping-converter base-package="com.zj.platform.gamecenter.entity" />  
+    <!-- mongodb bean的仓库目录，会自动扫描扩展了MongoRepository接口的接口进行注入 -->  
+    <mongo:repositories base-package="com.zj.platform.gamecenter.dao" />
+
+	<!-- 数据源相关配置 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="driverClassName" value="#{daoProps['dao.driverClassName']}" />
+		<property name="url" value="#{daoProps['dao.url']}" />
+		<property name="username" value="#{daoProps['dao.username']}" />
+		<property name="password" value="#{daoProps['dao.password']}" />
+		<!-- 初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时 -->
+		<property name="initialSize" value="#{daoProps['dao.initialSize']}" />
+		<!-- 最大连接池数量 -->
+		<property name="maxActive" value="#{daoProps['dao.maxActive']}" />
+		<!-- 最小连接池数量 -->
+		<property name="minIdle" value="#{daoProps['dao.minIdle']}" />
+		<!-- 是否缓存preparedStatement -->
+		<property name="poolPreparedStatements" value="#{daoProps['dao.poolPreparedStatements']}" />
+		<!-- 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true -->
+		<property name="maxOpenPreparedStatements" value="#{daoProps['dao.maxOpenPreparedStatements']}" />
+		<!-- 申请连接时执行validationQuery检测连接是否有效 -->
+		<property name="testOnBorrow" value="#{daoProps['dao.testOnBorrow']}" />
+		<!-- 用来检测连接是否有效的sql，要求是一个查询语句 -->
+		<property name="validationQuery" value="#{daoProps['dao.validationQuery']}" />
+		<!-- 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。 -->
+		<property name="testWhileIdle" value="#{daoProps['dao.testWhileIdle']}" />
+		<!-- Destroy线程会检测连接的间隔时间 -->
+		<property name="timeBetweenEvictionRunsMillis"
+			value="#{daoProps['dao.timeBetweenEvictionRunsMillis']}" />
+		<!-- 插件：监控统计stat 日志log4j 防御sql注入的wall -->
+		<property name="filters" value="#{daoProps['dao.filters']}" />
+		<!-- 对于长时间不使用的连接强制关闭 -->
+		<property name="removeAbandoned" value="#{daoProps['dao.removeAbandoned']}" />
+		<!-- 超过多少分钟开始关闭空闲连接 -->
+		<property name="removeAbandonedTimeout" value="#{daoProps['dao.removeAbandonedTimeout']}" />
+		<!-- 将当前关闭动作记录到日志 -->
+		<property name="logAbandoned" value="#{daoProps['dao.logAbandoned']}" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		 <property name="configLocation" value="classpath:mybatis.xml" />
+		<property name="mapperLocations" value="classpath*:mappers/*.xml" />
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.zj.platform.gamecenter.dao" />
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 事务配置 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+	
+	<!-- SpyMemcached客户端 -->
+	<bean id="spyMemcachedClient" class="com.zj.platform.gamecenter.service.cache.SpyMemcachedClient">
+		<property name="memcachedClient">
+			<bean class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+				<property name="servers" value="#{configProps['memcached.url']}" />
+				<property name="protocol" value="TEXT" />
+				<property name="locatorType" value="CONSISTENT" />
+				<property name="opTimeout" value="1000" />
+			</bean>
+		</property>
+		<property name="updateTimeout" value="1000"/>
+		<property name="shutdownTimeout" value="1000"/>
+	</bean>
+	
+	<!-- ApplicationContext工具类 -->
+	<bean id="applicationContextUtil" class="com.zj.platform.gamecenter.utils.ApplicationContextUtil"/>
+</beans>

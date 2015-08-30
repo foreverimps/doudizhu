@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zj.platform.gamecenter.dao.MoneyAccountDao" >
+
+	<sql id="base_list">
+	  ID, USER_ID AS userId, AMOUNT, UPDATE_TIME AS updateTime
+	</sql>
+	
+	<select id="queryByUserId" resultType="com.zj.platform.gamecenter.entity.MoneyAccount">
+    select 
+    <include refid="base_list" />
+    from t_money_account
+    where USER_ID = #{userId}
+	</select>
+  
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.zj.platform.gamecenter.entity.MoneyAccount">
+    insert into t_money_account ( USER_ID, AMOUNT, 
+      UPDATE_TIME)
+    values ( #{userId,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  
+</mapper>

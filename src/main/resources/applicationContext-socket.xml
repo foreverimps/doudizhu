@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.net.SocketAddress"
+					value="org.apache.mina.integration.beans.InetSocketAddressEditor" />
+			</map>
+		</property>
+	</bean>
+	<bean id="socketHandler" class="com.zj.platform.gamecenter.handler.SocketHandler" />
+	<!-- SSLContext to be used -->
+	<bean id="keystoreFactory" class="org.apache.mina.filter.ssl.KeyStoreFactory">
+		<property name="password" value="123456" />
+		<property name="dataUrl" value="classpath:serverKeys.jks" />
+	</bean>
+	<bean id="keyStore" factory-bean="keystoreFactory" factory-method="newInstance" />
+
+	<bean id="truststoreFactory" class="org.apache.mina.filter.ssl.KeyStoreFactory">
+		<property name="password" value="123456" />
+		<property name="dataUrl" value="classpath:serverTrust.jks" />
+	</bean>
+	<bean id="trustStore" factory-bean="truststoreFactory"
+		factory-method="newInstance" />
+
+	<bean id="sslContextFactory" class="org.apache.mina.filter.ssl.SslContextFactory">
+		<property name="protocol" value="TLS" />
+		<property name="keyManagerFactoryAlgorithm" value="SunX509" />
+		<property name="keyManagerFactoryKeyStore" ref="keyStore" />
+		<property name="keyManagerFactoryKeyStorePassword" value="123456" />
+		<property name="trustManagerFactoryAlgorithm" value="SunX509" />
+		<property name="trustManagerFactoryKeyStore" ref="trustStore" />
+	</bean>
+
+	<bean id="sslContext" factory-bean="sslContextFactory"
+		factory-method="newInstance" />
+	<bean id="sslFilter" class="org.apache.mina.filter.ssl.SslFilter">
+		<constructor-arg ref="sslContext" />
+		<property name="needClientAuth" value="true" />
+	</bean>
+
+	<!-- 过滤器 -->
+	<bean id="executorFilter" class="org.apache.mina.filter.executor.ExecutorFilter" />
+
+	<bean id="mdcInjectionFilter" class="org.apache.mina.filter.logging.MdcInjectionFilter">
+		<constructor-arg value="remoteAddress" />
+	</bean>
+	<bean id="customCodecFilter" class="org.apache.mina.filter.codec.ProtocolCodecFilter">
+		<constructor-arg>
+			<bean
+				class="com.zj.platform.gamecenter.utils.FixedHeadProtocalCodecFactory" />
+		</constructor-arg>
+	</bean>
+	<bean id="loggingFilter" class="org.apache.mina.filter.logging.LoggingFilter" />
+
+	<!-- 过滤链 -->
+	<bean id="filterChainBuilder"
+		class="org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder">
+		<property name="filters">
+			<map>
+				<entry key="executor" value-ref="executorFilter" />
+				<entry key="mdcInjectionFilter" value-ref="mdcInjectionFilter" />
+				<!-- <entry key="sslFilter" value-ref="sslFilter" /> -->
+				<entry key="codecFilter" value-ref="customCodecFilter" />
+				<entry key="loggingFilter" value-ref="loggingFilter" />
+			</map>
+		</property>
+	</bean>
+	<bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"
+		init-method="bind" destroy-method="unbind">
+		<property name="defaultLocalAddress" value=":8888" />
+		<property name="handler" ref="socketHandler" />
+		<property name="reuseAddress" value="true" />
+		<property name="filterChainBuilder" ref="filterChainBuilder" />
+	</bean>
+
+	<bean id="sessionConfig" factory-bean="ioAcceptor" factory-method="getSessionConfig">
+		<property name="keepAlive" value="true" />
+	</bean>
+</beans>

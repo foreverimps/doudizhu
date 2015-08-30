@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zj.platform.gamecenter.dao.SocketTaskDao" >
+
+	<sql id="base_list" >
+	      ID, ROOM_CODE AS roomCode, USER_ID AS userId, TYPE, COMMON_ID AS commonId, CONTENT, STATUS,
+	      CREATE_TIME AS createTime, UPDATE_TIME AS updateTime
+	</sql>
+	  
+	<select id="findByUserId" resultType="com.zj.platform.gamecenter.entity.SocketTask">
+    select 
+    <include refid="base_list" />
+    from t_socket_task
+    where USER_ID = #{userId}
+	</select>
+  
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.zj.platform.gamecenter.entity.SocketTask" >
+    insert into t_socket_task (ROOM_CODE, USER_ID, 
+      TYPE, COMMON_ID, CONTENT, 
+      STATUS)
+    values ( #{roomCode,jdbcType=VARCHAR}, #{userId,jdbcType=BIGINT}, 
+      #{type,jdbcType=INTEGER}, #{commonId,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateStatusById">
+		UPDATE T_SOCKET_TASK 
+		   SET STATUS = #{newStatus},
+		       UPDATE_TIME = NOW()
+		 WHERE ID = #{id}
+		   AND STATUS = #{oldStatus}
+	</update>
+	
+	<update id="deleteById">
+		DELETE FROM  T_SOCKET_TASK 
+		 WHERE ID = #{id}
+	</update>
+  
+</mapper>

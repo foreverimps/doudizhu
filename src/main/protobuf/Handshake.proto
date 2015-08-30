@@ -1,0 +1,8 @@
+package com.migu.platform.gamecenter.communication.protobuf;
+
+option java_package = "com.migu.platform.gamecenter.communication.protobuf";
+option java_outer_classname = "HandshakeProtobuf";
+message Handshake {
+	required string GameId = 1;//游戏id，双方约定
+	required string ServerId = 3;//游戏服务器标示
+}
