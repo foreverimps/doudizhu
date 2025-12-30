@@ -6,5 +6,5 @@
     "enable_open_ad": true,
     "enable_interstitial_ad": true,
     "enable_banner_ad": true,
-    "show_remove_ads": false
+    "show_remove_ads": true
   }
