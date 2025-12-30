@@ -1,0 +1,9 @@
+{
+    "app_id": "ca-app-pub-3940256099942544~3347511713",
+    "open_ad_id": "ca-app-pub-3940256099942544/9257395921",
+    "interstitial_ad_id": "ca-app-pub-3940256099942544/1033173712",
+    "banner_ad_id": "ca-app-pub-3940256099942544/6300978111",
+    "enable_open_ad": true,
+    "enable_interstitial_ad": false,
+    "enable_banner_ad": true
+  }
