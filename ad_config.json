@@ -5,5 +5,6 @@
     "banner_ad_id": "ca-app-pub-3940256099942544/6300978111",
     "enable_open_ad": true,
     "enable_interstitial_ad": true,
-    "enable_banner_ad": false
+    "enable_banner_ad": true,
+    "show_remove_ads": true
   }
