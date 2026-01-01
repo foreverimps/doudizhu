@@ -6,6 +6,6 @@
     "enable_open_ad": false,
     "enable_interstitial_ad": false,
     "enable_banner_ad": false,
-    "show_remove_ads": false,
+    "show_remove_ads": true,
     "force_update_version": 1
   }
